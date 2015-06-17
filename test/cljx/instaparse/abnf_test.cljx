@@ -128,3 +128,22 @@ to test the lookahead"
        (reps "")
        (reps "bccddee")
        (reps "aaaabbbbcccddee")))
+
+
+(deftest hex-chars
+  (let [poo "\uD83D\uDCA9"]
+    (are [spec input fail?] (= fail? (instance? instaparse.gll.Failure ((parser spec :input-format :abnf) input)))
+     "foo = %x41" "A" false
+     "foo = %x41" "B" true
+     "foo = %x41-57" "A" false
+     "foo = %x41-57" "B" false
+     "foo = %x41-57" "x" true
+     "foo = %x79-7A" "y" false
+     "foo = %x79-7A" "z" false
+     "foo = %x79-7A" "A" true
+
+     ;; unicode still doesn't work...
+     "S = %x1F4A9" poo false ;; parse fails
+     "S = %x1F4A8-1F4A9" poo false ;; regex is invalid
+
+     )))

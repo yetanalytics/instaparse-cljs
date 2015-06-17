@@ -115,11 +115,11 @@ regexp = #\"#'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'\"
 
 (defn get-char-combinator
   ([num1]
-   (string (apply str (char-codes num1))))
+   (string (apply str (char-codes (coerce-char num1)))))
   ([num1 num2 & nums]
     (let [v (vec (map coerce-char (concat [num1 num2] nums)))]
       (if (= (v 1) "-")
-        (char-range (v 0) (v 2))
+        (char-range num1 (first nums))
         (apply cat (for [n v]
                      (string (apply str (char-codes n)))))))))
 
